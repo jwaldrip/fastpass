@@ -4,7 +4,13 @@ Ensure CI doesn't run more than it needs to by "fast-passing" your commands.
 
 ## Installation
 
-TODO: Write installation instructions here
+### Homebrew
+
+`brew install jwaldrip/on-tap/fastlane`
+
+### Linux
+
+`curl -fsSL https://raw.githubusercontent.com/jwaldrip/fastpass/master/install-nix.sh`
 
 ## Usage
 
