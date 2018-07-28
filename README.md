@@ -6,7 +6,7 @@ Ensure CI doesn't run more than it needs to by "fast-passing" your commands.
 
 ### Homebrew
 
-`brew install jwaldrip/on-tap/fastlane`
+`brew install jwaldrip/on-tap/fastpass`
 
 ### Linux
 
