@@ -16,7 +16,7 @@ Ensure CI doesn't run more than it needs to by "fast-passing" your commands.
 
 Fastpass comes in two parts, a reporting server and a script runner. You will
 need to run your server and then configure your script runner locally by creating
-a `fastpass.yml file`.
+a `fastpass.yml` file.
 
 Here is the spec:
 
