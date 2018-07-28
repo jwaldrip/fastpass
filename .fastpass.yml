@@ -1,0 +1,7 @@
+server: "http://localhost:3000"
+check_environment:
+  - USER
+check_files:
+  - "./**/*"
+scripts:
+  spec: crystal spec

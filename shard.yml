@@ -1,0 +1,21 @@
+name: fastpass
+version: 0.1.0
+
+authors:
+  - jwaldrip <jason@waldrip.net>
+
+targets:
+  fastpass:
+    main: src/fastpass.cr
+
+dependencies:
+  admiral:
+    github: jwaldrip/admiral.cr
+    version: 1.7.3
+  orion:
+    github: obsidian/orion
+    version: 1.5.0
+
+crystal: 0.25.1
+
+license: MIT
