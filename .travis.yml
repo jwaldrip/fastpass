@@ -21,8 +21,10 @@ before_deploy:
 tags: true
 deploy:
   - provider: script
+    skip_cleanup: true
     script: psykube apply
   - provider: releases
+    skip_cleanup: true
     api_key:
       secure: slCZBZbTnJ/fEHwynlxQTMwcN163rbeskBNRf6rRRv40R3DtC/wP3KuKCZuQTRUHJSmCWTvLhMZORvfqSfPFOrXXR4fwwKUWW3z2JKdgOHyInGVq/T6JC2YMfvm8EnVFpw8yByOyg1fkXtLz3b+3Gv726w/3fEjXz5VHlubXPqeMUPVLGSB/pv4ljybNfsYVuG8zF5ulkzFQjAfRroR7HVKJXor2dqCEotV6B9Agb+LXn+1VLO6H2PleF6IOdq97lFt65oJDG+kDMC+H1aXRHERbqsKsT4ZEVvXpE+CgxWjaVv5a2/EbUVybAGCQLk9QmGAy0PWpwvyhw9+FDdl8UznEjwYnyu6zhIwSiAy+GuMVC74jMpxCjEuYPTdq22ItP8vE0PviJBOy8/S1iMTp+nI4Izgw2QwZvNt2MGLPDZug+dvdUrwLyMGM0idao8QxfNXB2odfLs4wVRAswiWwnZMmHZizzzOpicME75eOwGrV3RCTHPnF/qmFZUn+yXQmOqkc65DSmr8YPKS3NQMpVxFP9ACswxRlFMW140/nuFqLRq0lcpyeM14tGtgxaVcufoeuPwW+LAHltxnBOkDgu60uLJrtDq/2HTcgF+vBwMTQGCaMSxtkkM8qrIemjDwVTUTKoxjANLQsZDwcUaHEXU0tFY0qnmmP1TvHRb5IGHU=
     file: "./fastpass-$TRAVIS_OS_NAME-$TRAVIS_TAG.tar.gz"
