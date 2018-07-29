@@ -18,6 +18,7 @@ before_deploy:
   - echo $KUBECONFIG_ENCODED | base64 -d > /tmp/kubeconfig
   - shards build --release --no-debug
   - tar -czC ./bin fastpass > ./fastpass-$TRAVIS_OS_NAME-$TRAVIS_TAG.tar.gz
+  - curl -fsSL https://raw.githubusercontent.com/psykube/psykube/master/travis.sh | bash
 tags: true
 deploy:
   - provider: script
