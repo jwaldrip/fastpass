@@ -6,8 +6,8 @@ registry_user: jwaldrip
 ingress:
   tls: true
   host: fastpass.rocks
-healthcheck: true
 containers:
   server:
+    healthcheck: true
     ports:
       http: 3000
