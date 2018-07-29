@@ -9,7 +9,7 @@ class Fastpass::Spec
   @files = Set(String).new
 
   YAML.mapping({
-    server: String,
+    server: { type: String, default: "https://fastpass.rocks" },
     check_files: { type: Array(String), default: [] of String },
     check_environment: { type: Array(String), default: [] of String },
     ignore_files: { type: Array(String), default: [] of String },

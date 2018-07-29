@@ -21,7 +21,7 @@ a `fastpass.yml file`.
 Here is the spec:
 
 ```yaml
-# The server we will be reporting to
+# The server we will be reporting to (defaults to https://fastpass.rocks)
 server: "http://fastpass.jasonwaldrip.com"
 # Environment vars to include in the sha (optional)
 check_environment:

@@ -1,0 +1,13 @@
+version: 2
+type: Deployment
+name: fastpass
+registry_host: quay.io
+registry_user: jwaldrip
+ingress:
+  tls: true
+  host: fastpass.rocks
+healthcheck: true
+containers:
+  server:
+    ports:
+      http: 3000
