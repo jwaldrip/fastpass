@@ -3,4 +3,6 @@ check_environment:
 check_files:
   - "./**/*"
 scripts:
-  spec: crystal spec
+  spec: |
+    echo hello
+    echo goodbye
