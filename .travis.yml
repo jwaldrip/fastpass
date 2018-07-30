@@ -31,3 +31,4 @@ deploy:
     file: "./fastpass-$TRAVIS_OS_NAME-$TRAVIS_TAG.tar.gz"
     on:
       repo: jwaldrip/fastpass
+      tags: true
