@@ -27,6 +27,6 @@ class Fastpass::CLI::Server < Admiral::Command
   end
 
   def run
-    App.listen(port: (ENV["PORT"]? || 3000).to_i)
+    App.listen(host: "0.0.0.0", port: (ENV["PORT"]? || 3000).to_i)
   end
 end
