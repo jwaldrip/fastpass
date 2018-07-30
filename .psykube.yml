@@ -1,6 +1,14 @@
 version: 2
 type: Deployment
 name: fastpass
+
+{{#env.DOCKER_USERNAME}}
+image_pull_secrets:
+  - server: quay.io
+    username: {{ env.DOCKER_USERNAME }}
+    password: {{ env.DOCKER_PASSWORD }}
+{{/env.DOCKER_USERNAME}}
+
 registry_host: quay.io
 registry_user: jwaldrip
 ingress:
