@@ -10,6 +10,10 @@ class Fastpass::CLI::Server < Admiral::Command
     use HTTP::ErrorHandler
     use HTTP::LogHandler
 
+    get "/" do |context|
+      context.response.puts "OK"
+    end
+
     get "/:sha" do |context|
       sha = context.request.path_params["sha"]
       context.response.status_code = SHAS[sha]? ? 200 : 404
