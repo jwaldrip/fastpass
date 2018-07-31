@@ -6,6 +6,7 @@ require "../spec"
 class Fastpass::CLI::RunScript < Admiral::Command
   @uri : URI?
   @spec : Spec?
+  @sha : String?
 
   define_help description: "Runs a fast pass script."
   define_flag config, short: c, description: "Location of the config file", default: ".fastpass.yml"
@@ -17,12 +18,17 @@ class Fastpass::CLI::RunScript < Admiral::Command
   end
 
   private def check
-    puts "🐇  checking status of '#{uri.to_s}'".colorize(:cyan)
+    start = Time.now
+    puts "🐇  server: #{spec.server}"
+    print "🐇  calculating sha".colorize(:cyan)
+    print ": #{sha}".colorize(:cyan)
+    print " (took #{(Time.now - start).to_f.round(2)}s)\n"
+    puts "🐇  checking status".colorize(:light_yellow)
     response = HTTP::Client.get uri
     raise "unknown status" unless response.status_code < 400
     fastpass
   rescue e
-    @error_io.puts "🐇  error: #{e.message}".colorize(:light_yellow)
+    @error_io.puts "🐇  error: #{e.message}".colorize(:light_red)
     run_and_report
   end
 
@@ -53,20 +59,23 @@ class Fastpass::CLI::RunScript < Admiral::Command
 
   private def report
     puts ""
-    puts "🐇  reporting success to '#{uri.to_s}'".colorize(:cyan)
+    puts "🐇  reporting success".colorize(:light_green)
     response = HTTP::Client.post uri
     raise "unable to report" unless response.status_code == 201
   rescue e
-    @error_io.puts "🐇  error: #{e.message}".colorize(:light_yellow)
+    @error_io.puts "🐇  error: #{e.message}".colorize(:light_red)
   end
 
   private def spec
     @spec ||= Spec.from_yaml File.read(flags.config)
   end
 
+  private def sha
+    @sha ||= spec.compute_sha(arguments.script, arguments.to_a).to_s
+  end
+
   private def uri
     @uri ||= URI.parse(spec.server).tap do |uri|
-      sha = spec.compute_sha(arguments.script, arguments.to_a)
       uri.path = "/#{sha}"
     end
   end

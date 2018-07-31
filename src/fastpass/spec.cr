@@ -1,5 +1,5 @@
 require "uri"
-require "digest"
+require "openssl/digest"
 require "set"
 require "yaml"
 
@@ -25,29 +25,29 @@ class Fastpass::Spec
     ignore_files(script)
 
     # Actually compute the sha
-    Digest::SHA1.hexdigest do |sha|
+    OpenSSL::Digest.new("sha256").tap do |sha|
       compute_command(sha, script, args)
       compute_files(sha)
       compute_environment(sha)
     end
   end
 
-  private def compute_command(sha : Digest::SHA1, script : Script, args : Array(String))
+  private def compute_command(sha, script : Script, args : Array(String))
     compute_command(sha, script.@command, args)
   end
 
-  private def compute_command(sha : Digest::SHA1, command : String, args : Array(String))
+  private def compute_command(sha, command : String, args : Array(String))
     @full_command = ([command] + args).join(" ")
     sha.update full_command
   end
 
-  private def compute_files(sha : Digest::SHA1)
+  private def compute_files(sha)
     @files.each do |file|
       sha.update File.read(file)
     end
   end
 
-  private def compute_environment(sha : Digest::SHA1)
+  private def compute_environment(sha)
     @environment.each do |k, v|
       env = [k, v].join("=")
       sha.update env
