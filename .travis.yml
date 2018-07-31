@@ -26,7 +26,7 @@ deploy:
     skip_cleanup: true
     script: bash ./deploy-server.sh
     on:
-      # tags: true
+      tags: true
       condition: $TRAVIS_OS = "linux"
   - provider: releases
     skip_cleanup: true
@@ -35,4 +35,4 @@ deploy:
     file: "./fastpass-$TRAVIS_OS_NAME-$TRAVIS_TAG.tar.gz"
     on:
       repo: jwaldrip/fastpass
-      # tags: true
+      tags: true
