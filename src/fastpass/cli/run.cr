@@ -7,6 +7,7 @@ class Fastpass::CLI::RunScript < Admiral::Command
   @uri : URI?
   @spec : Spec?
   @sha : String?
+  @runtime : Float64?
 
   define_help description: "Runs a fast pass script."
   define_flag config, short: c, description: "Location of the config file", default: ".fastpass.yml"
@@ -25,15 +26,12 @@ class Fastpass::CLI::RunScript < Admiral::Command
     print " (took #{(Time.now - start).to_f.round(2)}s)\n"
     puts "🐇  checking status".colorize(:light_yellow)
     response = HTTP::Client.get uri
-    raise "unknown status" unless response.status_code < 400
-    fastpass
+    raise "unknown status" unless response.status_code == 202
+    timesaved = JSON.parse(response.body)["timesaved"].as_f
+    puts "🐇  fastpass (saved #{timesaved.round(2)}s)!".colorize(:light_green)
   rescue e
     @error_io.puts "🐇  error: #{e.message}".colorize(:light_red)
     run_and_report
-  end
-
-  private def fastpass
-    puts "🐇  fastpass!".colorize(:light_green)
   end
 
   private def run_and_report
@@ -47,6 +45,7 @@ class Fastpass::CLI::RunScript < Admiral::Command
       io.rewind
     end
     puts ""
+    start = Time.now
     status = Process.run(
       command: ENV["SHELL"],
       args: ["-eo", "pipefail"],
@@ -54,13 +53,14 @@ class Fastpass::CLI::RunScript < Admiral::Command
       error: @error_io,
       output: @output_io
     )
+    @runtime = (Time.now - start).to_f
     status.success? ? report : Process.exit(status.exit_status)
   end
 
   private def report
     puts ""
     puts "🐇  reporting success".colorize(:light_green)
-    response = HTTP::Client.post uri
+    response = HTTP::Client.post(uri.to_s, form: { "runtime" => @runtime.to_s })
     raise "unable to report" unless response.status_code == 201
   rescue e
     @error_io.puts "🐇  error: #{e.message}".colorize(:light_red)
