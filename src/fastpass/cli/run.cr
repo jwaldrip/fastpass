@@ -54,7 +54,7 @@ class Fastpass::CLI::RunScript < Admiral::Command
       output: @output_io
     )
     @runtime = (Time.now - start).to_f
-    status.success? ? report : Process.exit(status.exit_status)
+    status.success? ? report : Process.exit(1)
   end
 
   private def report
