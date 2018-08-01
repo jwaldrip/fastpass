@@ -80,8 +80,11 @@ class Fastpass::Spec
 
   private def include_files(files : Array(String))
     Dir.glob(files, true).each do |file|
-      path = File.real_path(File.expand_path(file))
-      @files.add path unless File.directory?(path)
+      begin
+        path = File.real_path(File.expand_path(file))
+        @files.add path unless File.directory?(path)
+      rescue e : Errno
+      end
     end
   end
 
