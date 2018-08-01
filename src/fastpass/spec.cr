@@ -42,7 +42,7 @@ class Fastpass::Spec
   end
 
   private def compute_files(sha)
-    @files.each do |file|
+    @files.to_a.sort.each do |file|
       sha.update File.read(file)
     end
   end
