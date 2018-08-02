@@ -9,21 +9,28 @@ class Fastpass::CLI::RunScript < Admiral::Command
   @sha : String?
   @runtime : Float64?
 
+  rescue_from Exception do |e|
+    STDERR.puts(e.message.colorize(:red))
+  end
+
   define_help description: "Runs a fast pass script."
   define_flag config, short: c, description: "Location of the config file", default: ".fastpass.yml"
 
   define_argument script : String, description: "The script to run", required: true
 
   def run
-    check
-  end
-
-  private def check
     start = Time.now
     puts "🐇  server: #{spec.server}"
     print "🐇  calculating sha".colorize(:cyan)
     print ": #{sha}".colorize(:cyan)
     print " (took #{(Time.now - start).to_f.round(2)}s)\n"
+    check
+  rescue e
+    puts
+    raise e
+  end
+
+  private def check
     puts "🐇  checking status".colorize(:light_yellow)
     response = HTTP::Client.get uri
     raise "unknown status" unless response.status_code == 202
@@ -78,5 +85,8 @@ class Fastpass::CLI::RunScript < Admiral::Command
     @uri ||= URI.parse(spec.server).tap do |uri|
       uri.path = "/#{sha}"
     end
+  end
+
+  private def handle_error
   end
 end

@@ -98,7 +98,7 @@ class Fastpass::Spec
   end
 
   private def ignore_files(files : Array(String))
-    files << "./.git/**/*"
+    files << "./**/.git/**/*"
     Dir.glob(files, true).each do |file|
       path = File.real_path(File.expand_path(file))
       @files.delete path unless File.directory?(path)
