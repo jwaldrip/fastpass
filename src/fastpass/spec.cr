@@ -126,7 +126,7 @@ class Fastpass::Spec
     matches.map do |match|
       path = if match =~ /^\.\.?\//
                match
-             elsif File.directory?(match)
+             elsif File.directory?(File.expand_path(match, dir))
                "#{match}/**/*"
              else
                "./**/#{match}"
