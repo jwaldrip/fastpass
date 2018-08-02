@@ -15,7 +15,7 @@ class Fastpass::CLI::RunScript < Admiral::Command
 
   define_help description: "Runs a fast pass script."
   define_flag config, short: c, description: "location of the config file", default: ".fastpass.yml"
-  define_flag shell, short: s, description: "the shell to run in", default: ENV["SHELL"]? || "sh"
+  define_flag shell, short: s, description: "the shell to run in", default: "/bin/bash"
   define_flag shell_args, short: a, description: "arguments passed to the shell", default: "-leo pipefail"
 
   define_argument script : String, description: "The script to run", required: true
@@ -63,13 +63,10 @@ class Fastpass::CLI::RunScript < Admiral::Command
       output: @output_io
     )
     @runtime = (Time.now - start).to_f
-    puts "exit code: #{status.exit_code}" if status.normal_exit?
-    puts "exit signal: #{status.exit_signal}" if status.signal_exit?
     if status.success?
       report
     else
-      puts "🐇  command failed with status: #{status.exit_status}".colorize(:light_green)
-      Process.exit(1)
+      Process.exit(status.exit_code)
     end
   end
 
