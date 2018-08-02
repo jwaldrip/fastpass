@@ -63,6 +63,8 @@ class Fastpass::CLI::RunScript < Admiral::Command
       output: @output_io
     )
     @runtime = (Time.now - start).to_f
+    puts "exit code: #{status.exit_code}" if status.normal_exit?
+    puts "exit signal: #{status.exit_signal}" if status.signal_exit?
     if status.success?
       report
     else
