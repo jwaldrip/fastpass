@@ -124,10 +124,10 @@ class Fastpass::Spec
 
   private def expand_matches(matches : Array(String), dir = Dir.current)
     matches.map do |match|
-      path = if match =~ /^\.\.?\//
-               match
-             elsif File.directory?(File.expand_path(match, dir))
+      path = if File.directory?(File.expand_path(match, dir))
                "#{match}/**/*"
+             elsif match =~ /^\.\.?\//
+               match
              else
                "./**/#{match}"
              end
