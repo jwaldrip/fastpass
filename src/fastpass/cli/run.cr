@@ -55,7 +55,7 @@ class Fastpass::CLI::RunScript < Admiral::Command
     start = Time.now
     status = Process.run(
       command: ENV["SHELL"]? || "sh",
-      args: ["-e"],
+      args: ["-le"],
       input: input_io,
       error: @error_io,
       output: @output_io
