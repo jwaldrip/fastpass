@@ -63,7 +63,12 @@ class Fastpass::CLI::RunScript < Admiral::Command
       output: @output_io
     )
     @runtime = (Time.now - start).to_f
-    status.success? ? report : Process.exit(1)
+    if status.success?
+      report
+    else
+      puts "🐇  command failed with status: #{status.exit_status}".colorize(:light_green)
+      Process.exit(1)
+    end
   end
 
   private def report
