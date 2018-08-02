@@ -14,7 +14,9 @@ class Fastpass::CLI::RunScript < Admiral::Command
   end
 
   define_help description: "Runs a fast pass script."
-  define_flag config, short: c, description: "Location of the config file", default: ".fastpass.yml"
+  define_flag config, short: c, description: "location of the config file", default: ".fastpass.yml"
+  define_flag shell, short: s, description: "the shell to run in", default: ENV["SHELL"]? || "sh"
+  define_flag shell_args, short: a, description: "arguments passed to the shell", default: "-leo pipefail"
 
   define_argument script : String, description: "The script to run", required: true
 
@@ -54,8 +56,8 @@ class Fastpass::CLI::RunScript < Admiral::Command
     puts ""
     start = Time.now
     status = Process.run(
-      command: ENV["SHELL"]? || "sh",
-      args: ["-le"],
+      command: flags.shell,
+      args: flags.shell_args.split(" "),
       input: input_io,
       error: @error_io,
       output: @output_io
