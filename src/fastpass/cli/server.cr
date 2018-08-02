@@ -24,7 +24,7 @@ class Fastpass::CLI::Server < Admiral::Command
         context.response.content_type = "application/json"
         JSON.build(context.response) do |builder|
           Server.saved += SHAS[sha]
-          { timesaved: SHAS[sha] }.to_json(builder)
+          {timesaved: SHAS[sha]}.to_json(builder)
         end
       else
         context.response.status_code = 404

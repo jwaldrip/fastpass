@@ -67,7 +67,7 @@ class Fastpass::CLI::RunScript < Admiral::Command
   private def report
     puts ""
     puts "🐇  reporting success".colorize(:light_green)
-    response = HTTP::Client.post(uri.to_s, form: { "runtime" => @runtime.to_s })
+    response = HTTP::Client.post(uri.to_s, form: {"runtime" => @runtime.to_s})
     raise "unable to report" unless response.status_code == 201
   rescue e
     @error_io.puts "🐇  error: #{e.message}".colorize(:light_red)
@@ -85,8 +85,5 @@ class Fastpass::CLI::RunScript < Admiral::Command
     @uri ||= URI.parse(spec.server).tap do |uri|
       uri.path = "/#{sha}"
     end
-  end
-
-  private def handle_error
   end
 end

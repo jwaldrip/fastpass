@@ -9,20 +9,28 @@ class Fastpass::Spec
   @files = Set(String).new
 
   YAML.mapping({
-    server: { type: String, default: "https://fastpass.rocks" },
-    check_files: { type: Array(String), default: [] of String },
-    check_environment: { type: Array(String), default: [] of String },
-    ignore_files: { type: Array(String), default: [] of String },
-    scripts: Hash(String, String | Script)
+    server:            {type: String, default: "https://fastpass.rocks"},
+    check_files:       {type: Array(String), default: [] of String},
+    check_environment: {type: Array(String), default: [] of String},
+    ignore_files:      {type: Array(String), default: [] of String},
+    scripts:           Hash(String, String | Script),
   }, true)
 
+  def parse_files(script_name : String)
+    return @files unless @files.empty?
+    script = @scripts[script_name]? || raise "script does not exist: #{script_name}"
+    include_files(script)
+    ignore_files(script)
+    parse_ignore_file ".fastpassignore"
+    @files
+  end
+
   def compute_sha(script_name : String, args : Array(String))
-    script = scripts[script_name]? || raise "script does not exist: #{script_name}"
+    script = @scripts[script_name]? || raise "script does not exist: #{script_name}"
 
     # Set it all up
     include_environment(script)
-    include_files(script)
-    ignore_files(script)
+    parse_files(script_name)
 
     # Actually compute the sha
     OpenSSL::Digest.new("sha256").tap do |sha|
@@ -78,12 +86,14 @@ class Fastpass::Spec
     include_files(@check_files)
   end
 
-  private def include_files(files : Array(String))
-    Dir.glob(files, true).each do |file|
-      begin
-        path = File.real_path(File.expand_path(file))
-        @files.add path unless File.directory?(path)
-      rescue e : Errno
+  private def include_files(matches : Array(String))
+    matches = expand_matches(matches)
+    Dir.glob(matches, true).each do |file|
+      unless File.directory?(file)
+        begin
+          @files.add File.real_path(file)
+        rescue e : Errno
+        end
       end
     end
   end
@@ -97,14 +107,42 @@ class Fastpass::Spec
     ignore_files(@ignore_files)
   end
 
-  private def ignore_files(files : Array(String))
-    files << "./**/.git/**/*"
-    Dir.glob(files, true).each do |file|
-      path = File.real_path(File.expand_path(file))
-      @files.delete path unless File.directory?(path)
+  private def ignore_files(matches : Array(String))
+    matches << ".git"
+    matches = expand_matches(matches)
+    Dir.glob(matches, true).each do |file|
+      if File.directory?(file)
+        parse_ignore_file File.join(file, ".fastpassignore")
+      else
+        begin
+          @files.delete File.real_path(file)
+        rescue e : Errno
+        end
+      end
     end
   end
 
+  private def expand_matches(matches : Array(String), dir = Dir.current)
+    matches.map do |match|
+      path = if match =~ /^\.\.?\//
+               match
+             elsif File.directory?(match)
+               "#{match}/**/*"
+             else
+               "./**/#{match}"
+             end
+      File.expand_path(path, dir)
+    end.compact
+  end
+
+  private def parse_ignore_file(ignore_file)
+    if File.exists?(ignore_file)
+      ignore_file = File.expand_path(ignore_file)
+      path = File.dirname(ignore_file)
+      ignored_files = File.read(ignore_file).lines.map { |f| File.join(path, f.strip) }.reject(&.empty?)
+      ignore_files(ignored_files)
+    end
+  end
 end
 
 require "./spec/*"
