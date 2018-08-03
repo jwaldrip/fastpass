@@ -7,6 +7,7 @@ class Fastpass::Spec
   getter full_command = ""
   @environment = {} of String => String
   @files = Set(String).new
+  @static_ignore_files = [] of String
 
   YAML.mapping({
     server:            {type: String, default: "https://fastpass.rocks"},
@@ -89,8 +90,11 @@ class Fastpass::Spec
   private def include_files(matches : Array(String))
     matches = expand_matches(matches)
     Dir.glob(matches, true).each do |file|
-      unless File.directory?(file)
+      if File.directory?(file)
+        @static_ignore_files << File.expand_path(".fastpassignore", file)
+      else
         begin
+          @static_ignore_files << file if File.basename(file) == ".fastpassignore"
           @files.add File.real_path(file)
         rescue e : Errno
         end
@@ -101,6 +105,9 @@ class Fastpass::Spec
   private def ignore_files(script : Script)
     ignore_files
     ignore_files(script.@ignore_files)
+    @static_ignore_files.each do |file|
+      parse_ignore_file file
+    end
   end
 
   private def ignore_files(script : String? = nil)
@@ -111,9 +118,7 @@ class Fastpass::Spec
     matches << ".git"
     matches = expand_matches(matches)
     Dir.glob(matches, true).each do |file|
-      if File.directory?(file)
-        parse_ignore_file File.join(file, ".fastpassignore")
-      else
+      unless File.directory?(file)
         begin
           @files.delete File.real_path(file)
         rescue e : Errno
