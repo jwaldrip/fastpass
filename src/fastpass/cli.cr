@@ -10,6 +10,7 @@ class Fastpass::CLI < Admiral::Command
 
   rescue_from Exception do |e|
     STDERR.puts(e.message.colorize(:red))
+    Process.exit(1)
   end
 
   def run
