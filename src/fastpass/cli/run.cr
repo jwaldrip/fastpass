@@ -1,50 +1,50 @@
 require "colorize"
 require "http/client"
 require "admiral"
-require "../spec"
+require "./helper"
 
 class Fastpass::CLI::RunScript < Admiral::Command
-  @uri : URI?
-  @spec : Spec?
-  @sha : String?
+  include Helper
   @runtime : Float64?
 
+  class UnknownStatus < Exception
+  end
+
   rescue_from Exception do |e|
-    STDERR.puts(e.message.colorize(:red))
+    log e.message, :light_red, @error_io
+    Process.exit(1)
   end
 
   define_help description: "Runs a fast pass script."
-  define_flag config, short: c, description: "location of the config file", default: ".fastpass.yml"
   define_flag shell, short: s, description: "the shell to run in", default: "/bin/bash"
   define_flag shell_args, short: a, description: "arguments passed to the shell", default: "-leo pipefail"
 
-  define_argument script : String, description: "The script to run", required: true
-
   def run
     start = Time.now
-    puts "🐇  server: #{spec.server}"
-    print "🐇  calculating sha".colorize(:cyan)
-    print ": #{sha}".colorize(:cyan)
-    print " (took #{(Time.now - start).to_f.round(2)}s)\n"
     check
-  rescue e
-    puts
-    raise e
   end
 
   private def check
-    puts "🐇  checking status".colorize(:light_yellow)
+    log "checking status", :light_yellow
     response = HTTP::Client.get uri
-    raise "unknown status" unless response.status_code == 202
+    raise UnknownStatus.new("status unreported") unless response.status_code == 202
     timesaved = JSON.parse(response.body)["timesaved"].as_f
-    puts "🐇  fastpass (saved #{timesaved.round(2)}s)!".colorize(:light_green)
-  rescue e
-    @error_io.puts "🐇  error: #{e.message}".colorize(:light_red)
+    log "fastpass (saved #{timesaved.round(2)}s)!", :light_green
+  rescue e : UnknownStatus
+    log "#{e.message}", :light_yellow, @error_io
     run_and_report
+  rescue e
+    log "#{e.message}, status wont be reported", :light_red, @error_io
+    run_command
   end
 
   private def run_and_report
-    puts "🐇  running command:".colorize(:light_green)
+    run_command
+    report
+  end
+
+  private def run_command
+    log "running command:", :light_green
     puts ""
     input_io = IO::Memory.new.tap do |io|
       spec.full_command.lines.each do |line|
@@ -63,33 +63,13 @@ class Fastpass::CLI::RunScript < Admiral::Command
       output: @output_io
     )
     @runtime = (Time.now - start).to_f
-    if status.success?
-      report
-    else
-      Process.exit(status.exit_code)
-    end
+    raise "command failed" unless status.success?
   end
 
   private def report
     puts ""
-    puts "🐇  reporting success".colorize(:light_green)
+    log "reporting success", :light_green
     response = HTTP::Client.post(uri.to_s, form: {"runtime" => @runtime.to_s})
     raise "unable to report" unless response.status_code == 201
-  rescue e
-    @error_io.puts "🐇  error: #{e.message}".colorize(:light_red)
-  end
-
-  private def spec
-    @spec ||= Spec.from_yaml File.read(flags.config)
-  end
-
-  private def sha
-    @sha ||= spec.compute_sha(arguments.script, arguments.to_a).to_s
-  end
-
-  private def uri
-    @uri ||= URI.parse(spec.server).tap do |uri|
-      uri.path = "/#{sha}"
-    end
   end
 end

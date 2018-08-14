@@ -37,6 +37,10 @@ class Fastpass::CLI::Server < Admiral::Command
       SHAS[sha] = (form_params["runtime"]? || 0.0).to_f
       context.response.status_code = 201
     end
+
+    delete "/:sha" do |context|
+      SHAS.delete context.request.path_params["sha"]
+    end
   end
 
   def run
