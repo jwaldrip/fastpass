@@ -1,5 +1,7 @@
 sudo: required
 language: crystal
+crystal:
+  - 0.25.1
 os:
   - linux
   - osx
