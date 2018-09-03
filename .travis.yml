@@ -27,7 +27,7 @@ deploy:
     script: bash ./deploy-server.sh
     on:
       tags: true
-      condition: $TRAVIS_OS = "linux"
+      condition: $TRAVIS_OS_NAME = "linux"
   - provider: releases
     skip_cleanup: true
     api_key:
