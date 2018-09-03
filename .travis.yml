@@ -22,12 +22,12 @@ before_deploy:
   - tar -czC ./bin fastpass > ./fastpass-$TRAVIS_OS_NAME-$TRAVIS_TAG.tar.gz
 tags: true
 deploy:
-  - provider: script
-    skip_cleanup: true
-    script: bash ./deploy-server.sh
-    on:
-      tags: true
-      condition: $TRAVIS_OS_NAME = "linux"
+  # - provider: script
+  #   skip_cleanup: true
+  #   script: bash ./deploy-server.sh
+  #   on:
+  #     tags: true
+  #     condition: $TRAVIS_OS_NAME = "linux"
   - provider: releases
     skip_cleanup: true
     api_key:
