@@ -1,4 +1,4 @@
-FROM crystallang/crystal:0.25.1
+FROM crystallang/crystal:0.26.1
 
 WORKDIR build-dir/fastpass
 COPY shard.lock shard.yml ./
