@@ -7,7 +7,7 @@ class Fastpass::CLI::Server < Admiral::Command
 
   class_property saved : Float64 = 0.0
 
-  define_help description: "Runs a fast pass server."
+  define_help description: "Runs a fastpass server."
 
   router App do
     use HTTP::ErrorHandler

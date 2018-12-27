@@ -15,7 +15,7 @@ class Fastpass::CLI::RunScript < Admiral::Command
     Process.exit(1)
   end
 
-  define_help description: "Runs a fast pass script."
+  define_help description: "Runs a fastpass script."
   define_flag shell, short: s, description: "the shell to run in", default: "/bin/bash"
   define_flag shell_args, short: a, description: "arguments passed to the shell", default: "-leo pipefail"
 

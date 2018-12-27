@@ -7,7 +7,7 @@ require "./helper"
 class Fastpass::CLI::Files < Admiral::Command
   include Helper
 
-  define_help description: "Runs a fast pass script."
+  define_help description: "Lists the files checked by fastpass."
 
   def run
     spec.parse_files(arguments.script).each do |file|
