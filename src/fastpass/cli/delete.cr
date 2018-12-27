@@ -10,7 +10,7 @@ class Fastpass::CLI::DeleteStatus < Admiral::Command
     STDERR.puts(e.message.colorize(:red))
   end
 
-  define_help description: "Runs a fast pass script."
+  define_help description: "Deletes a fastpass status."
   define_argument sha : String, description: "The sha to delete"
 
   def run

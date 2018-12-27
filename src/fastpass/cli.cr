@@ -2,7 +2,8 @@ require "admiral"
 
 class Fastpass::CLI < Admiral::Command
   register_sub_command run : RunScript, description: "Run a fastpass script."
-  register_sub_command delete : DeleteStatus, description: "Run a fastpass status."
+  register_sub_command delete : CheckStatus, description: "Delete a fastpass status."
+  register_sub_command delete : DeleteStatus, description: "Delete a fastpass status."
   register_sub_command server : Server, description: "Run a fastpass server."
   register_sub_command files : Files, description: "List the watched files."
 
