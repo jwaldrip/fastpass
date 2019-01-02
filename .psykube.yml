@@ -9,6 +9,8 @@ image_pull_secrets:
     password: {{ env.DOCKER_PASSWORD }}
 {{/env.DOCKER_USERNAME}}
 
+context: gke_waldrip-net_us-central1-a_waldrip-net
+
 volumes:
   store: 10Gi
 
