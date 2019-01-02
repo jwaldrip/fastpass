@@ -3,5 +3,13 @@ services:
   server:
     build:
       context: .
+    command:
+      - ./bin/fastpass
+      - server
+      - --redis=redis://redis:6379
     ports:
       - "3000:3000"
+  redis:
+    image: redis
+    ports: 
+      - "6379"

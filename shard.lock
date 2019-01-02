@@ -20,3 +20,11 @@ shards:
     github: obsidian/orion
     version: 1.6.0
 
+  pool:
+    github: ysbaddaden/pool
+    version: 0.2.3
+
+  redis:
+    github: stefanwille/crystal-redis
+    version: 2.1.1
+

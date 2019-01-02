@@ -15,6 +15,9 @@ dependencies:
   orion:
     github: obsidian/orion
     version: 1.6.0
+  redis:
+    github: stefanwille/crystal-redis
+    version: ~> 2.1.1
 
 crystal: 0.26.1
 

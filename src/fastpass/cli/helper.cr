@@ -32,10 +32,11 @@ module Fastpass::CLI::Helper
     io.puts "🐇  #{message}".colorize(color)
   end
 
-  private def uri
+  private def uri(params = nil)
     @uri ||= URI.parse(spec.server).tap do |uri|
       log "server: #{uri.to_s}"
       uri.path = "/#{sha}"
+      uri.query = HTTP::Params.encode(params) if params
     end
   end
 end

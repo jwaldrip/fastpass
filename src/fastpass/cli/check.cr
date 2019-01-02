@@ -26,7 +26,7 @@ class Fastpass::CLI::CheckStatus < Admiral::Command
 
   private def check
     log "checking status", :light_yellow
-    response = HTTP::Client.get uri
+    response = HTTP::Client.get uri({ "check" => "true" })
     raise UnknownStatus.new("Status Not Reported") unless response.status_code == 202
     log "Aleady Reported", :light_green
   rescue e : UnknownStatus
