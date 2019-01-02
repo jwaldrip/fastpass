@@ -9,6 +9,9 @@ image_pull_secrets:
     password: {{ env.DOCKER_PASSWORD }}
 {{/env.DOCKER_USERNAME}}
 
+volumes:
+  store: 10Gi
+
 registry_host: quay.io
 registry_user: jwaldrip
 ingress:
@@ -16,6 +19,12 @@ ingress:
   host: fastpass.rocks
 containers:
   server:
+    volumes:
+      store: /store
+    command:
+      - ./bin/fastpass
+      - server
+      - --fs=/store
     healthcheck: true
     ports:
       http: 3000
