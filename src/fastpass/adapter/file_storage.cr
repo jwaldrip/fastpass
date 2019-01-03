@@ -20,7 +20,7 @@ class Fastpass::Adapter::FileStorage
         value = File.exists?(path) ? File.read(path).strip : nil
         raise MissingSha.new unless value
         increment_total(value.to_f) if increment
-        value
+        value.to_f
     end
 
     def get_total

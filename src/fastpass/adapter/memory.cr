@@ -12,7 +12,7 @@ class Fastpass::Adapter::Memory
         value = @shas[sha]?
         raise MissingSha.new unless value
         increment_total(value) if increment
-        value
+        value.to_f
     end
 
     def get_total

@@ -16,7 +16,7 @@ class Fastpass::Adapter::Redis
         value = @client.get(sha)
         raise MissingSha.new unless value
         increment_total(value.to_f) if increment
-        value
+        value.to_f
     end
 
     def get_total
