@@ -16,8 +16,6 @@ class Fastpass::CLI::CheckStatus < Admiral::Command
   end
 
   define_help description: "Checks a fastpass status."
-  define_flag shell, short: s, description: "the shell to run in", default: "/bin/bash"
-  define_flag shell_args, short: a, description: "arguments passed to the shell", default: "-leo pipefail"
 
   def run
     start = Time.now

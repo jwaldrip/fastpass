@@ -46,8 +46,9 @@ class Fastpass::Spec
   end
 
   private def compute_command(sha, command : String, args : Array(String))
+    raise "Cannot have arguments with multiline scripts" if (command.lines.size > 1 && args.size > 0)
     @full_command = ([command] + args).join(" ")
-    sha.update full_command
+    sha.update @full_command
   end
 
   private def compute_files(sha)

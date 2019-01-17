@@ -16,8 +16,6 @@ class Fastpass::CLI::RunScript < Admiral::Command
   end
 
   define_help description: "Runs a fastpass script."
-  define_flag shell, short: s, description: "the shell to run in", default: "/bin/bash"
-  define_flag shell_args, short: a, description: "arguments passed to the shell", default: "-leo pipefail"
 
   def run
     start = Time.now
@@ -44,26 +42,28 @@ class Fastpass::CLI::RunScript < Admiral::Command
   end
 
   private def run_command
-    log "running command:", :light_green
+    log "running script \"#{arguments.script}\"", :light_green
     puts ""
-    input_io = IO::Memory.new.tap do |io|
-      spec.full_command.lines.each do |line|
+    File.tempfile arguments.script do |file|
+      lines = spec.full_command.lines
+      lines.unshift "#!/usr/bin/env bash -leo pipefail" unless lines[0]? =~ /^#!\/.+/
+      lines.each do |line|
         puts "    " + line
-        io.puts line
+        file.puts line
       end
-      io.rewind
-    end
-    puts ""
-    start = Time.now
-    status = Process.run(
-      command: flags.shell,
-      args: flags.shell_args.split(" "),
-      input: input_io,
-      error: @error_io,
-      output: @output_io
-    )
-    @runtime = (Time.now - start).to_f
-    raise "command failed" unless status.success? || status.signal_exit?
+      start = Time.now
+      File.chmod(file.path, 0o755)
+      file.close
+      puts "", "---------- command output ----------", ""
+      status = Process.run(
+        command: file.path,
+        input: @input_io,
+        error: @error_io,
+        output: @output_io
+      )
+      @runtime = (Time.now - start).to_f
+      raise "command failed" unless status.success? || status.signal_exit?
+    end    
   end
 
   private def report
