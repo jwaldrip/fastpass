@@ -46,7 +46,7 @@ class Fastpass::CLI::RunScript < Admiral::Command
     puts ""
     File.tempfile arguments.script do |file|
       lines = spec.full_command.lines
-      lines.unshift "#!/usr/bin/env bash -leo pipefail" unless lines[0]? =~ /^#!\/.+/
+      lines.unshift "#!/bin/bash -le" unless lines[0]? =~ /^#!\/.+/
       lines.each do |line|
         puts "    " + line
         file.puts line
