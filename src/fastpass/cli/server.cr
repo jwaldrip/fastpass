@@ -3,6 +3,9 @@ require "orion"
 require "json"
 require "../adapter/*"
 
+class MissingSha < Exception
+end
+
 class Fastpass::CLI::Server < Admiral::Command
   class_property adapter : Adapter::Redis | Adapter::FileStorage | Adapter::Memory = Adapter::Memory.new
 
