@@ -29,7 +29,9 @@ class Fastpass::CLI::CheckStatus < Admiral::Command
     log "Aleady Reported", :light_green
   rescue e : UnknownStatus
     log "#{e.message}", :light_yellow, @error_io
+    Process.exit(1)
   rescue e
     log "#{e.message}", :light_red, @error_io
+    Process.exit(1)
   end
 end
