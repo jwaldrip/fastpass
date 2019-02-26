@@ -11,7 +11,7 @@ class Fastpass::Spec
 
   YAML.mapping({
     server:            {type: String, default: "https://fastpass.rocks"},
-    check_outputs:     Array(String),
+    check_outputs:     {type: Array(String), default: [] of String},
     check_files:       {type: Array(String), default: [] of String},
     check_environment: {type: Array(String), default: [] of String},
     ignore_files:      {type: Array(String), default: [] of String},
