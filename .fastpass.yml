@@ -3,6 +3,8 @@ check_environment:
   - USER
 check_files:
   - "./**/*"
+check_outputs:
+  - echo "hello"
 scripts:
   spec: |
     echo hello

@@ -11,11 +11,12 @@ class Fastpass::Spec
 
   YAML.mapping({
     server:            {type: String, default: "https://fastpass.rocks"},
+    check_outputs:     Array(String),
     check_files:       {type: Array(String), default: [] of String},
     check_environment: {type: Array(String), default: [] of String},
     ignore_files:      {type: Array(String), default: [] of String},
     scripts:           Hash(String, String | Script),
-  }, true)
+  })
 
   def parse_files(script_name : String)
     return @files unless @files.empty?
@@ -38,6 +39,7 @@ class Fastpass::Spec
       compute_command(sha, script, args)
       compute_files(sha)
       compute_environment(sha)
+      compute_outputs(sha, script)
     end
   end
 
@@ -49,6 +51,22 @@ class Fastpass::Spec
     raise "Cannot have arguments with multiline scripts" if (command.lines.size > 1 && args.size > 0)
     @full_command = ([command] + args).join(" ")
     sha.update @full_command
+  end
+
+  private def compute_outputs(sha, script : String)
+    ((@check_outputs || [] of String)).each do |command|
+      compute_output sha, script, command
+    end
+  end
+
+  private def compute_outputs(sha, script : Script)
+    ((@check_outputs || [] of String) + (script.@check_outputs || [] of String)).each do |command|
+      compute_output sha, script, command
+    end
+  end
+
+  private def compute_output(sha, script, command : String)
+    sha.update `#{command}`
   end
 
   private def compute_files(sha)

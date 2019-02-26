@@ -63,7 +63,7 @@ class Fastpass::CLI::RunScript < Admiral::Command
       )
       @runtime = (Time.now - start).to_f
       raise "command failed" unless status.success? || status.signal_exit?
-    end    
+    end
   end
 
   private def report
