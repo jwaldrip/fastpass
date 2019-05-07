@@ -1,5 +1,5 @@
 name: fastpass
-version: 0.42.0
+version: 0.43.0
 
 authors:
   - jwaldrip <jason@waldrip.net>
@@ -14,11 +14,11 @@ dependencies:
     version: 1.7.3
   orion:
     github: obsidian/orion
-    version: 1.6.0
+    version: 1.7.0
   redis:
     github: stefanwille/crystal-redis
     version: ~> 2.1.1
 
-crystal: 0.26.1
+crystal: 0.28.0
 
 license: MIT
