@@ -67,6 +67,7 @@ class Fastpass::Spec
 
   private def compute_output(sha, script, command : String)
     sha.update `#{command}`
+    raise Exception.new("#{script} exited with #{$?.exit_status}") unless $?.success?
   end
 
   private def compute_files(sha)
