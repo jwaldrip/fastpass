@@ -39,7 +39,7 @@ class Fastpass::CLI::AdhocScript < Admiral::Command
       check_outputs: flags.output,
       check_environment: flags.env,
       ignore_files: flags.ignore,
-      command: ([arguments.command] + arguments.to_a).join(" ")
+      command: arguments.command
     )
   end
 
