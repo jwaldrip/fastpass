@@ -18,6 +18,12 @@ class Fastpass::Spec
     scripts:           Hash(String, String | Script),
   })
 
+  def initialize(*, @server : String = "https://fastpass.rocks", @check_outputs : Array(String) = [] of String, @check_files : Array(String) = [] of String, @check_environment : Array(String) = [] of String, @ignore_files : Array(String) = [] of String, command : String)
+    @scripts = {
+      "default" => command
+    } of String => String | Script
+  end
+
   def parse_files(script_name : String)
     return @files unless @files.empty?
     script = @scripts[script_name]? || raise "script does not exist: #{script_name}"
