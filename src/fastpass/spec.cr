@@ -37,6 +37,7 @@ class Fastpass::Spec
     script = @scripts[script_name]? || raise "script does not exist: #{script_name}"
 
     # Set it all up
+    @environment["FASTPASS_MANUAL_TRIGGER"] = ENV["FASTPASS_MANUAL_TRIGGER"]?.to_s
     include_environment(script)
     parse_files(script_name)
 
