@@ -7,7 +7,7 @@ class Fastpass::CLI::RunScript < Admiral::Command
   include Helper
   @runtime : Float64?
 
-  class UnknownStatus < Exception
+  class UnknownStatusError < Exception
   end
 
   rescue_from Exception do |e|
@@ -25,12 +25,15 @@ class Fastpass::CLI::RunScript < Admiral::Command
   private def check
     log "checking status", :light_yellow
     response = HTTP::Client.get uri
-    raise UnknownStatus.new("status unreported") unless response.status_code == 202
+    raise UnknownStatusError.new("status unreported") unless response.status_code == 202
     timesaved = JSON.parse(response.body)["timesaved"].as_f
     log "fastpass (saved #{timesaved.round(2)}s)!", :light_green
-  rescue e : UnknownStatus
+  rescue e : UnknownStatusError
     log "#{e.message}", :light_yellow, @error_io
     run_and_report
+  rescue e : Spec::MissingScriptError
+    log e, :red, @error_io
+    exit 1
   rescue e
     log "#{e.message}, status wont be reported", :light_red, @error_io
     run_command

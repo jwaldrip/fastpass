@@ -9,6 +9,9 @@ class Fastpass::Spec
   @files = Set(String).new
   @static_ignore_files = [] of String
 
+  class MissingScriptError < Exception
+  end
+
   YAML.mapping({
     server:            {type: String, default: "https://fastpass.rocks"},
     check_outputs:     {type: Array(String), default: [] of String},
@@ -26,7 +29,7 @@ class Fastpass::Spec
 
   def parse_files(script_name : String)
     return @files unless @files.empty?
-    script = @scripts[script_name]? || raise "script does not exist: #{script_name}"
+    script = @scripts[script_name]? || raise MissingScriptError.new("script does not exist: #{script_name}")
     include_files(script)
     ignore_files(script)
     parse_ignore_file ".fastpassignore"
@@ -34,7 +37,7 @@ class Fastpass::Spec
   end
 
   def compute_sha(script_name : String, args : Array(String))
-    script = @scripts[script_name]? || raise "script does not exist: #{script_name}"
+    script = @scripts[script_name]? || raise MissingScriptError.new("script does not exist: #{script_name}")
 
     # Set it all up
     @environment["FASTPASS_MANUAL_TRIGGER"] = ENV["FASTPASS_MANUAL_TRIGGER"]?.to_s
