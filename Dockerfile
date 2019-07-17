@@ -5,5 +5,3 @@ COPY shard.lock shard.yml ./
 RUN shards install
 COPY src src
 RUN shards build --production
-
-ENTRYPOINT ["/build/fastpass/bin/fastpass"]
