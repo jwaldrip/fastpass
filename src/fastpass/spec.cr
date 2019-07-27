@@ -32,6 +32,7 @@ class Fastpass::Spec
     script = @scripts[script_name]? || raise MissingScriptError.new("script does not exist: #{script_name}")
     include_files(script)
     ignore_files(script)
+    ignore_untracked_files
     parse_ignore_file ".fastpassignore"
     @files
   end
@@ -177,6 +178,14 @@ class Fastpass::Spec
       ignored_files = File.read(ignore_file).lines.map { |f| File.join(path, f.strip) }.reject(&.empty?)
       ignore_files(ignored_files)
     end
+  end
+
+  private def ignore_untracked_files
+    git_root = `git rev-parse --show-toplevel`.strip
+    git_files = `git ls-files #{git_root}`.lines.map do |file|
+      File.expand_path(file, git_root)
+    end
+    @files &= git_files.to_set
   end
 end
 
