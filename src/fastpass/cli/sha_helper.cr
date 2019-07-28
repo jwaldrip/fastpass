@@ -1,6 +1,6 @@
 require "uri"
-module Fastpass::CLI::ShaHelper
 
+module Fastpass::CLI::ShaHelper
   @uri : URI?
   @sha : String?
 

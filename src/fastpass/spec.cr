@@ -23,7 +23,7 @@ class Fastpass::Spec
 
   def initialize(*, @server : String = "https://fastpass.rocks", @check_outputs : Array(String) = [] of String, @check_files : Array(String) = [] of String, @check_environment : Array(String) = [] of String, @ignore_files : Array(String) = [] of String, command : String)
     @scripts = {
-      "default" => command
+      "default" => command,
     } of String => String | Script
   end
 
@@ -182,10 +182,12 @@ class Fastpass::Spec
 
   private def ignore_untracked_files
     git_root = `git rev-parse --show-toplevel`.strip
-    git_files = `git ls-files #{git_root}`.lines.map do |file|
-      File.expand_path(file, git_root)
-    end
-    @files &= git_files.to_set
+    git_files = Dir.cd git_root do
+      `git ls-files`.lines.map do |file|
+        File.expand_path(file, git_root)
+      end
+    end.to_set
+    @files &= git_files
   end
 end
 
