@@ -1,5 +1,5 @@
 name: fastpass
-version: 0.55.0
+version: 0.55.1
 
 authors:
   - jwaldrip <jason@waldrip.net>
@@ -19,6 +19,6 @@ dependencies:
     github: stefanwille/crystal-redis
     version: ~> 2.1.1
 
-crystal: 0.28.0
+crystal: 0.30.0
 
 license: MIT
