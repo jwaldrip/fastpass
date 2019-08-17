@@ -7,6 +7,7 @@ class Fastpass::Spec
   getter full_command = ""
   @environment = {} of String => String
   @files = Set(String).new
+  @tracked_files : Set(String)? = nil
   @static_ignore_files = [] of String
 
   class MissingScriptError < Exception
@@ -32,7 +33,6 @@ class Fastpass::Spec
     script = @scripts[script_name]? || raise MissingScriptError.new("script does not exist: #{script_name}")
     include_files(script)
     ignore_files(script)
-    ignore_untracked_files
     parse_ignore_file ".fastpassignore"
     @files
   end
@@ -126,7 +126,10 @@ class Fastpass::Spec
       else
         begin
           @static_ignore_files << file if File.basename(file) == ".fastpassignore"
-          @files.add File.real_path(file)
+          if tracked_files.includes?(File.real_path(file))
+            path = File.real_path(file)
+            @files.add path
+          end
         rescue e : Errno
         end
       end
@@ -151,7 +154,10 @@ class Fastpass::Spec
     Dir.glob(matches, true).each do |file|
       unless File.directory?(file)
         begin
-          @files.delete File.real_path(file)
+          path = File.real_path(file)
+          if tracked_files.includes? path
+            @files.delete path
+          end
         rescue e : Errno
         end
       end
@@ -180,14 +186,15 @@ class Fastpass::Spec
     end
   end
 
-  private def ignore_untracked_files
-    git_root = `git rev-parse --show-toplevel`.strip
-    git_files = Dir.cd git_root do
-      `git ls-files`.lines.map do |file|
-        File.expand_path(file, git_root)
-      end
-    end.to_set
-    @files &= git_files
+  private def tracked_files
+    @tracked_files ||= begin
+      git_root = `git rev-parse --show-toplevel`.strip
+      git_files = Dir.cd git_root do
+        `git ls-files`.lines.map do |file|
+          File.expand_path(file, git_root)
+        end
+      end.to_set
+    end
   end
 end
 
