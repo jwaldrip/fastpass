@@ -5,6 +5,7 @@ require "yaml"
 
 class Fastpass::Spec
   getter full_command = ""
+  getter retries : Int32 = 0
   @environment = {} of String => String
   @files = Set(String).new
   @tracked_files : Set(String)? = nil
@@ -55,6 +56,7 @@ class Fastpass::Spec
   end
 
   private def compute_command(sha, script : Script, args : Array(String))
+    @retries = script.@retries
     compute_command(sha, script.@command, args)
   end
 

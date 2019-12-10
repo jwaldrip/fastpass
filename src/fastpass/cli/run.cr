@@ -59,14 +59,18 @@ class Fastpass::CLI::RunScript < Admiral::Command
       File.chmod(file.path, 0o755)
       file.close
       puts "", "---------- command output ----------", ""
-      status = Process.run(
-        command: file.path,
-        input: @input_io,
-        error: @error_io,
-        output: @output_io
-      )
-      @runtime = (Time.now - start).to_f
-      raise "command failed" unless status.success? || status.signal_exit?
+      retry = 0
+      loop do
+        status = Process.run(
+          command: file.path,
+          input: @input_io,
+          error: @error_io,
+          output: @output_io
+        )
+        @runtime = (Time.now - start).to_f
+        break if status.success?
+        raise "command failed" if (retry += 1) > spec.retries
+      end
     end
   end
 
