@@ -1,5 +1,5 @@
 name: fastpass
-version: 0.55.2
+version: 0.56.0
 
 authors:
   - jwaldrip <jason@waldrip.net>
@@ -11,10 +11,10 @@ targets:
 dependencies:
   admiral:
     github: jwaldrip/admiral.cr
-    version: 1.7.3
+    version: 1.9.0
   orion:
     github: obsidian/orion
-    version: 1.7.0
+    version: 2.1.0
   redis:
     github: stefanwille/crystal-redis
     version: ~> 2.1.1

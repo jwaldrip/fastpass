@@ -2,7 +2,7 @@ version: 1.0
 shards:
   admiral:
     github: jwaldrip/admiral.cr
-    version: 1.7.3
+    version: 1.9.0
 
   inflector:
     github: phoffer/inflector.cr
@@ -18,7 +18,7 @@ shards:
 
   orion:
     github: obsidian/orion
-    version: 1.7.0
+    version: 2.1.0
 
   pool:
     github: ysbaddaden/pool

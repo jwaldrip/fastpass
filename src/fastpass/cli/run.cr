@@ -47,6 +47,7 @@ class Fastpass::CLI::RunScript < Admiral::Command
   private def run_command
     log "running script \"#{arguments.script}\"", :light_green
     puts ""
+    ENV["FASTPASS_REPORT_URL"] = uri.to_s
     File.tempfile arguments.script do |file|
       lines = spec.full_command.lines
       lines.unshift "#!/bin/bash -le" unless lines[0]? =~ /^#!\/.+/
