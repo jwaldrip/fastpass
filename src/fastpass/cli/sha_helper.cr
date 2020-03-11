@@ -6,11 +6,11 @@ module Fastpass::CLI::ShaHelper
 
   private def sha
     @sha ||= begin
-      start = Time.now
+      start = Time.utc
       print "🐇  calculating sha".colorize(:cyan)
       sha = spec.compute_sha(script, arguments.to_a).to_s
       print ": #{sha}".colorize(:cyan)
-      print " (took #{(Time.now - start).to_f.round(2)}s)\n"
+      print " (took #{(Time.utc - start).to_f.round(2)}s)\n"
       sha
     rescue e
       puts

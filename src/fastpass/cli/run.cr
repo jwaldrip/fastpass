@@ -18,7 +18,7 @@ class Fastpass::CLI::RunScript < Admiral::Command
   define_help description: "Runs a fastpass script."
 
   def run
-    start = Time.now
+    start = Time.utc
     check
   end
 
@@ -55,7 +55,7 @@ class Fastpass::CLI::RunScript < Admiral::Command
         puts "    " + line
         file.puts line
       end
-      start = Time.now
+      start = Time.utc
       File.chmod(file.path, 0o755)
       file.close
       puts "", "---------- command output ----------", ""
@@ -67,7 +67,7 @@ class Fastpass::CLI::RunScript < Admiral::Command
           error: @error_io,
           output: @output_io
         )
-        @runtime = (Time.now - start).to_f
+        @runtime = (Time.utc - start).to_f
         break if status.success?
         raise "command failed" if (retry += 1) > spec.retries
       end

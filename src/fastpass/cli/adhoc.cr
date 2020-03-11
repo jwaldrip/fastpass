@@ -28,7 +28,7 @@ class Fastpass::CLI::AdhocScript < Admiral::Command
 
   def run
     Dir.cd flags.context
-    start = Time.now
+    start = Time.utc
     check
   end
 
@@ -76,7 +76,7 @@ class Fastpass::CLI::AdhocScript < Admiral::Command
         puts "    " + line
         file.puts line
       end
-      start = Time.now
+      start = Time.utc
       File.chmod(file.path, 0o755)
       file.close
       puts "", "---------- command output ----------", ""
@@ -86,7 +86,7 @@ class Fastpass::CLI::AdhocScript < Admiral::Command
         error: @error_io,
         output: @output_io
       )
-      @runtime = (Time.now - start).to_f
+      @runtime = (Time.utc - start).to_f
       raise "command failed" unless status.success? || status.signal_exit?
     end
   end
