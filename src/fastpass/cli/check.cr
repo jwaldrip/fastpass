@@ -18,7 +18,7 @@ class Fastpass::CLI::CheckStatus < Admiral::Command
   define_help description: "Checks a fastpass status."
 
   def run
-    start = Time.now
+    start = Time.utc
     check
   end
 
